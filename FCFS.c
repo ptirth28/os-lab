@@ -1,89 +1,99 @@
-#include<iostream> 
-using namespace std; 
-  
-// Function to find the waiting time for all 
-// processes 
-void findWaitingTime(int processes[], int n, int bt[], 
-                                   int wt[], int at[]) 
-{ 
-    int service_time[n]; 
-    service_time[0] = 0; 
-    wt[0] = 0; 
-  
-    // calculating waiting time 
-    for (int i = 1; i < n ; i++) 
-    { 
-        // Add burst time of previous processes 
-        service_time[i] = service_time[i-1] + bt[i-1]; 
-  
-        // Find waiting time for current process = 
-        // sum - at[i] 
-        wt[i] = service_time[i] - at[i]; 
-  
-        // If waiting time for a process is in negative 
-        // that means it is already in the ready queue 
-        // before CPU becomes idle so its waiting time is 0 
-        if (wt[i] < 0) 
-            wt[i] = 0; 
-    } 
-} 
-  
-// Function to calculate turn around time 
-void findTurnAroundTime(int processes[], int n, int bt[], 
-                                      int wt[], int tat[]) 
-{ 
-    // Calculating turnaround time by adding bt[i] + wt[i] 
-    for (int i = 0; i < n ; i++) 
-        tat[i] = bt[i] + wt[i]; 
-} 
-  
-// Function to calculate average waiting and turn-around 
-// times. 
-void findavgTime(int processes[], int n, int bt[], int at[]) 
-{ 
-    int wt[n], tat[n]; 
-  
-    // Function to find waiting time of all processes 
-    findWaitingTime(processes, n, bt, wt, at); 
-  
-    // Function to find turn around time for all processes 
-    findTurnAroundTime(processes, n, bt, wt, tat); 
-  
-    // Display processes along with all details 
-    cout << "Processes " << " Burst Time " << " Arrival Time "
-         << " Waiting Time " << " Turn-Around Time "
-         << " Completion Time \n"; 
-    int total_wt = 0, total_tat = 0; 
-    for (int i = 0 ; i < n ; i++) 
-    { 
-        total_wt = total_wt + wt[i]; 
-        total_tat = total_tat + tat[i]; 
-        int compl_time = tat[i] + at[i]; 
-        cout << " " << i+1 << "\t\t" << bt[i] << "\t\t"
-             << at[i] << "\t\t" << wt[i] << "\t\t "
-             << tat[i]  <<  "\t\t " << compl_time << endl; 
-    } 
-  
-    cout << "Average waiting time = "
-         << (float)total_wt / (float)n; 
-    cout << "\nAverage turn around time = "
-         << (float)total_tat / (float)n; 
-} 
-  
-// Driver code 
-int main() 
-{ 
-    // Process id's 
-    int processes[] = {1, 2, 3}; 
-    int n = sizeof processes / sizeof processes[0]; 
-  
-    // Burst time of all processes 
-    int burst_time[] = {5, 9, 6}; 
-  
-    // Arrival time of all processes 
-    int arrival_time[] = {0, 3, 6}; 
-  
-    findavgTime(processes, n, burst_time, arrival_time); 
-  
-    return 0; 
-} 
+#include<stdio.h>
+#include<stdlib.h>
+
+typedef struct process{
+	char name[5];
+	int bt;
+	int at;
+	int prt;
+	int wt,ta;
+	int flag;
+	int ct;
+}processes;
+
+
+void b_sort(processes temp[],int n)
+{
+	processes t;
+	int i,j;
+	for(i=1;i<n;i++)
+		for(j=0;j<n-i;j++){
+			if(temp[j].at > temp[j+1].at){
+				t = temp[j];
+				temp[j] = temp[j+1];
+				temp[j+1] = t;
+			}
+		}
+}
+
+int accept(processes P[]){
+	int i,n;
+	printf("\n Enter total no. of processes : ");
+	scanf("%d",&n);
+	for(i=0;i<n;i++){
+		printf("\n PROCESS [%d]",i+1);
+		printf(" Enter process name : ");
+		scanf("%s",&P[i].name);
+		printf(" Enter burst time : ");
+		scanf("%d",&P[i].bt);
+		printf(" Enter arrival time : ");
+		scanf("%d",&P[i].at);
+	}
+	return n;
+}
+
+void FCFS(processes P[],int n){
+	processes temp[10];
+	int sumw=0,sumt=0;
+	int x = 0;
+	float avgwt=0.0,avgta=0.0;
+	int i,j;
+	for(i=0;i<n;i++)
+		temp[i]=P[i];
+
+	b_sort(temp,n);
+
+		printf("\n\n PROC.\tB.T.\tA.T.");
+		for(i=0;i<n;i++)
+			printf("\n %s\t%d\t%d",temp[i].name,temp[i].bt,temp[i].at);
+
+		sumw = temp[0].wt = 0;
+		sumt = temp[0].ta = temp[0].bt - temp[0].at;
+
+		for(i=1;i<n;i++){
+			temp[i].wt = (temp[i-1].bt + temp[i-1].at + temp[i-1].wt) - temp[i].at;;
+			temp[i].ta = (temp[i].wt + temp[i].bt);
+			sumw+=temp[i].wt;
+			sumt+=temp[i].ta;
+		}
+		avgwt = (float)sumw/n;
+		avgta = (float)sumt/n;
+		
+		
+		printf("\n\n GANTT CHART\n ");
+		for(i=0;i<n;i++)
+			printf("   %s   ",temp[i].name);
+		printf("\n ");
+
+		printf("0\t");
+		for(i=1;i<=n;i++){
+			x+=temp[i-1].bt;
+			printf("%d      ",x);
+			temp[i-1].ct=x;
+		}
+		printf("\n\n PROC.\tB.T.\tA.T.\tC.T\tW.T\tT.A.T");
+		for(i=0;i<n;i++)
+			printf("\n %s\t%d\t%d\t%d\t%d\t%d",temp[i].name,temp[i].bt,temp[i].at,temp[i].ct,temp[i].wt,temp[i].ta);
+		printf("\n\n Average waiting time = %0.2f\n Average turn-around = %0.2f.",avgwt,avgta);
+}
+
+
+int main(){
+	
+	
+	processes P[10];
+	int a;
+	a=accept(P);
+	FCFS(P,a);
+	return 0;
+}
