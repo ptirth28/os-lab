@@ -1,0 +1,7 @@
+OS Lab Assignment-5
+
+Date : 6/9/2018
+
+1. Write a program to implement a) Round Robin Scheduling, b) Priority Scheduling.
+
+2. Write a C program for implementing the command  ls | sort

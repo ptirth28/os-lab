@@ -1,0 +1,17 @@
+OS Lab Assignment-3
+
+Date : 9/8/2018
+
+ 
+
+Write a C program to implement FCFS scheduling algorithm with the following specifications.
+
+ 
+
+a) Read from user the inputs arrival time and burst time for N number processes. (Each process must be assigned a unique number.)
+
+b) Compute completion time, response time, turn- around-time, waiting for each process. Also compute ATAT and AWT.
+
+c) Print the Process scheduling table with entries (Pno, AT, BT, CT, TAT, WT)
+
+d) Print the Gantt Chart also.
