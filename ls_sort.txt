@@ -1,9 +1,5 @@
-#include <stdio.h> 
-#include <stdlib.h> 
-#include <fcntl.h> 
-#include<errno.h> 
-#include<sys/wait.h> 
-#include <unistd.h> 
+#include <bits/stdc++.h>
+
 int main(){ 
      
     int a[2]; 
